@@ -145,7 +145,7 @@ function ChatScreen({ chatName, conversations, setConversations, onBack }) {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="iMessage"
+            placeholder="Message"
             className="
         flex-1
         bg-transparent

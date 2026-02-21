@@ -84,7 +84,7 @@ function Compose({ onBack, onCreate }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="iMessage"
+            placeholder="Message"
             className="
               flex-1 bg-transparent outline-none text-sm
               text-zinc-900 dark:text-white
