@@ -8,102 +8,72 @@ function Compose({ onBack, onCreate }) {
 
   const handleSend = () => {
     if (!canSend) return;
-    onCreate(recipient.trim(), message.trim());
+    onCreate(recipient, message);
+
+    setRecipient("");
+    setMessage("");
   };
 
   return (
-    <div
-      className="
-      flex flex-col h-screen
-      bg-gradient-to-br
-      from-slate-100 to-white
-      dark:from-black dark:to-zinc-900
-      text-black dark:text-white
-    "
-    >
-      <div
-        className="
-        sticky top-0 z-20
-        backdrop-blur-3xl
-        bg-white/30 dark:bg-white/5
-        border-b border-white/20 dark:border-white/10
-        px-4 pt-4 pb-5
-        flex items-center justify-center
-        relative
-      "
-      >
-        <div className="font-semibold text-sm">New Message</div>
-
-        <button
-          onClick={onBack}
-          className="
-            absolute right-4
-            w-8 h-8
-            flex items-center justify-center
-            rounded-full
-            bg-white/20 dark:bg-white/10
-          "
-        >
+    <div className="screen">
+      <div className="compose-header">
+        <button onClick={onBack} className="close-button">
           ✕
         </button>
+        <div className="compose-title">New Message</div>
       </div>
 
-      <div className="px-4 py-3 border-b border-white/10">
-        <div className="flex items-center gap-2">
-          <span className="text-sm opacity-60">To:</span>
+      <div className="content">
+        <div style={{ marginBottom: 16 }}>
+          <span style={{ marginRight: 8 }}>To:</span>
           <input
             value={recipient}
             onChange={(e) => setRecipient(e.target.value)}
-            placeholder="Name"
-            className="
-              flex-1 bg-transparent outline-none text-sm
-              text-zinc-900 dark:text-white
-              placeholder-zinc-500 dark:placeholder-zinc-400
-            "
-            autoFocus
+            style={{
+              border: "none",
+              background: "transparent",
+              outline: "none",
+              color: "var(--text-primary)",
+            }}
           />
         </div>
       </div>
 
-      <div className="flex-1" />
-
-      <div className="fixed bottom-0 left-0 right-0 px-4 pb-4">
+      <div className="bottom-fixed">
         <div
-          className="
-          flex items-center gap-2
-          px-4 py-3
-          rounded-3xl
-          backdrop-blur-3xl
-          bg-gradient-to-br from-white/50 to-white/20
-          dark:from-white/10 dark:to-white/5
-          border border-white/30 dark:border-white/10
-          shadow-[0_8px_40px_rgba(0,0,0,0.25)]
-        "
+          className="glass rounded-full message-input-bar"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            padding: "10px 16px",
+          }}
         >
           <input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Message"
-            className="
-              flex-1 bg-transparent outline-none text-sm
-              text-zinc-900 dark:text-white
-              placeholder-zinc-500 dark:placeholder-zinc-400
-            "
+            placeholder="iMessage"
+            style={{
+              border: "none",
+              background: "transparent",
+              flex: 1,
+              outline: "none",
+              color: "var(--text-primary)",
+            }}
           />
 
           <button
             onClick={handleSend}
             disabled={!canSend}
-            className={`
-              w-9 h-9 flex items-center justify-center rounded-full
-              text-white transition
-              ${
-                canSend
-                  ? "bg-blue-500 shadow-lg active:scale-95"
-                  : "bg-blue-300 opacity-50"
-              }
-            `}
+            style={{
+              background: canSend ? "var(--accent)" : "gray",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: 36,
+              height: 36,
+              cursor: canSend ? "pointer" : "not-allowed",
+            }}
           >
             ↑
           </button>

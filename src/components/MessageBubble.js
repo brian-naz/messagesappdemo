@@ -1,26 +1,33 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 
 function MessageBubble({ message, messages, index, onReact, lastDeliveredId }) {
   const isMe = message.sender === "me";
   const [showReactions, setShowReactions] = useState(false);
-  const isLast =
-    !messages[index + 1] || messages[index + 1].sender !== message.sender;
 
   const time = new Date(message.timestamp).toLocaleTimeString([], {
     hour: "2-digit",
     minute: "2-digit",
   });
 
+  const bubbleRef = useRef(null);
+
   useEffect(() => {
-    const handleClick = () => setShowReactions(false);
+    const handleClick = (e) => {
+      if (bubbleRef.current && !bubbleRef.current.contains(e.target)) {
+        setShowReactions(false);
+      }
+    };
     window.addEventListener("click", handleClick);
-    return () => window.removeEventListener("click", handleClick);
-  }, []);
+    return () => {
+      window.removeEventListener("click", handleClick);
+    };
+  }, [showReactions]);
 
   return (
     <div
-      className={`flex ${isMe ? "justify-end" : "justify-start"} relative`}
+      ref={bubbleRef}
+      className={`message-row ${isMe ? "me" : "bot"}`}
       onContextMenu={(e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -28,64 +35,47 @@ function MessageBubble({ message, messages, index, onReact, lastDeliveredId }) {
       }}
     >
       <motion.div
-        layout
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 500, damping: 30 }}
-        className="max-w-[70%]"
+        className={`message-container ${isMe ? "me" : "bot"}`}
+        initial={{ opacity: 0, y: 10, x: isMe ? 20 : -20 }}
+        animate={{ opacity: 1, y: 0, x: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
       >
-        <div
-          className={`
-          px-4 py-2 rounded-2xl text-sm shadow-xl backdrop-blur-xl border
-          ${
-            isMe
-              ? `bg-blue-500 text-white ${isLast ? "rounded-br-md" : ""}`
-              : `bg-white/60 dark:bg-zinc-800 text-black dark:text-white border-white/40 dark:border-zinc-700 ${
-                  isLast ? "rounded-bl-md" : ""
-                }`
-          }
-        `}
-        >
-          {message.text}
-        </div>
-
-        <div
-          className={`text-[10px] mt-1 text-zinc-600 dark:text-zinc-400 text-right${
-            isMe ? "text-right" : "text-left"
-          }`}
-        >
-          {time}
-        </div>
-
-        {isMe && message.id === lastDeliveredId && (
-          <div className="text-[10px] text-zinc-500 dark:text-zinc-400 text-right">
-            Delivered
+        <div className={`bubble-wrapper ${isMe ? "me" : "bot"}`}>
+          {message.reaction && (
+            <div className={`reaction-row ${isMe ? "me" : "bot"}`}>
+              {message.reaction}
+            </div>
+          )}
+          <div className={`message-bubble ${isMe ? "me" : "bot"}`}>
+            {message.type === "image" ? (
+              <img src={message.src} alt="bot" className="message-image" />
+            ) : (
+              message.text
+            )}
           </div>
-        )}
+
+          <div className={`message-time ${isMe ? "me" : "bot"}`}>{time}</div>
+        </div>
       </motion.div>
 
       {showReactions && (
         <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
+          initial={{ scale: 0.85, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          className="absolute -top-10 left-4 px-3 py-2 rounded-full bg-white/80 dark:bg-zinc-800 backdrop-blur-xl shadow-xl flex gap-2"
+          className={`reaction-menu ${isMe ? "me" : "bot"}`}
         >
-          {["❤️", "👍", "😂", "😮", "😢"].map((e) => (
+          {["❤️", "👍", "😂", "😮", "😢"].map((emoji) => (
             <span
-              key={e}
+              key={emoji}
               onClick={() => {
-                onReact(e);
+                onReact(message.reaction === emoji ? null : emoji);
                 setShowReactions(false);
               }}
-              className="cursor-pointer hover:scale-125 transition"
             >
-              {e}
+              {emoji}
             </span>
           ))}
         </motion.div>
-      )}
-      {message.reaction && (
-        <div className="mt-1 text-sm">{message.reaction}</div>
       )}
     </div>
   );

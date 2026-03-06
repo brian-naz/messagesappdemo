@@ -38,15 +38,8 @@ const TimeSeparator = ({ timestamp }) => {
   }
 
   return (
-    <div className="flex justify-center my-4">
-      <div
-        className="
-          text-[10px]
-          text-zinc-500 dark:text-zinc-400
-        "
-      >
-        {label}
-      </div>
+    <div className="time-separator">
+      <div className="time-separator-label">{label}</div>
     </div>
   );
 };
