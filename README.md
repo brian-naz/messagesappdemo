@@ -24,6 +24,7 @@ v1.1.0
 - Updated UI massively
 - Now supports Dark Mode and Light Mode depending on system
 - Conversations now get saved from previous session
+- Added more responses
 - Some bug fixes from last time (I'm not sure)
 - 🥚
 
