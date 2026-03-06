@@ -17,6 +17,8 @@ v1.0.1
 
 - Minor UI improvements
 
+(Mar 5 2026)
+
 v1.1.0
 
 - Updated UI massively
